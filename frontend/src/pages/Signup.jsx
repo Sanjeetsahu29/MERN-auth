@@ -1,16 +1,18 @@
-import {Link} from 'react-router-dom';
+import {Link,useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 
 export default function Signup() {
   const [formData, setFormData] = useState({})
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  // const [message, setMessage] = useState('');
+  const navigate = useNavigate();
   function handleChange(e){
     setFormData({...formData, [e.target.id] : e.target.value})
   }
   const handleSubmit= async (e)=>{
     e.preventDefault();
-    setError(false);
+    // setError(false);
     try{
       setLoading(true);
       const response = await fetch('api/auth/signup',{
@@ -20,16 +22,20 @@ export default function Signup() {
         },
         body: JSON.stringify(formData),
       })
+      console.log(response);
+      
       const data = await response.json();
       console.log(data)
       setLoading(false);
+      // setMessage(data.message);
       if(data.success === false){
-        setError(true);
+        // setError(true);
         return;
       }
+      navigate('/signin');
     }catch(error){
       setLoading(false);
-      setError(true);
+      // setError(true);
       console.log(error);
     }
 }
@@ -64,7 +70,7 @@ export default function Signup() {
         <p>Have an account?</p>
         <Link to='/signin'><span className="text-blue-500">Sign in</span></Link>
       </div>
-      <p className={`mt-2 text-[13px]  ${error ? "text-red-700 " : "text-green-700"}`}>{error ? "Something went wrong, try again!" : "Account created successfully"}</p>
+      {/* <p className={`mt-2 text-[13px] ${message.includes('success') ?  'text-green-500':'text-red-700'  }` }>{message}</p> */}
     </div>
   )
 }
